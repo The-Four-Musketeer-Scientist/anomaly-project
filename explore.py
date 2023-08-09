@@ -1,6 +1,6 @@
 def compute_pct_b(pages, span, weight, user):
-    midband = train.ewm(span=span).mean()
-    stdev = train.ewm(span=span).std()
+    midband = df.ewm(span=span).mean()
+    stdev = df.ewm(span=span).std()
     ub = midband + stdev*weight
     lb = midband - stdev*weight
     bb = pd.concat([ub, lb], axis=1)
@@ -10,7 +10,7 @@ def compute_pct_b(pages, span, weight, user):
     df['user_id'] = user
     return df
 
-def plt_bands(my_df, user):
+def plt_bands(df, user):
     fig, ax = plt.subplots(figsize=(12,8))
     ax.plot(df.index, df.pages, label='Number of Pages, User: '+str(user))
     ax.plot(df.index, df.midband, label = 'EMA/midband')
