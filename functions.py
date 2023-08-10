@@ -1,4 +1,6 @@
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 
 def print_top_lessons1(df):
@@ -79,3 +81,37 @@ def process_lessons_data(lessons_df):
     return lessons_with_traffic_equal_to_1
 
 
+def find_outliers(df_combined):
+    # Find the unique paths in the dataframe
+    paths = list(df_combined.path.unique())
+    #create empty path's list
+    list_of_paths =[]
+    #create list of cohorts and name_of cohorts to be built out AFTER mvp
+    list_of_cohorts = []
+    name_of_cohorts = []
+    
+    #for each path mask the dataframe by path and then calculate mean and standard deviation of each 
+    for p in paths:
+        # masks the combined dataframe for the path
+        mask = df_combined[df_combined.path == p]
+        #mask away very low visits
+        ###mask = mask[mask['size'] != 1] maybe not
+        #calculates the mean standard deviation upper and lower bounds even though lb not needed
+        max = mask['size'].max()
+        mean = mask['size'].mean()
+        std = mask['size'].std()
+        ub = mean + 3 * std
+        lb = mean - 3 * std
+
+        a = mask[mask['size'] > ub]
+        # masks the length of the masked dataframe such that 1 cohort is outside the ub
+        if len(a) == 1: #df_combined['size'].max() > ub: 
+            list_of_paths.append(p)
+            list_of_cohorts.append(a.cohort_id)
+            print(a['cohort_id'])
+            print(f'{p},{max},{mean}')
+            # Commented out for the sake of final notebook dataframe if you wanna see comment back in
+            # sns.scatterplot(mask, x='cohort_id', y='size') 
+            # plt.show()
+    return list_of_paths
+            
