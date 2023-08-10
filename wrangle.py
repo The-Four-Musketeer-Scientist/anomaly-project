@@ -58,8 +58,20 @@ def prep_log_data():
 
     df['date'] = pd.to_datetime(df['date'])
     df.set_index('date', inplace=True)
-    
+    df = df.drop(columns = 'deleted_at')
+    df.dropna(inplace=True)
+    df['time'] = df['time'].astype(str)
+    df['cohort_id'] = df['cohort_id'].astype(int)
+    df['id'] = df['id'].astype(int)
+    df['start_date'] = pd.to_datetime(df['start_date'])
+    df['end_date'] = pd.to_datetime(df['end_date'])
+    df['created_at'] = pd.to_datetime(df['created_at'])
+    df['updated_at'] = pd.to_datetime(df['updated_at'])
+    df['program_id'] = df['program_id'].astype(int)
 
     return df
+
+
+
 
 
